@@ -1,4 +1,4 @@
-package campembermanager
+package campmembermanager
 
 import "time"
 

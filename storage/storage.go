@@ -18,23 +18,23 @@ type Options struct {
 	Host         []string
 	KeySpace     string
 	ProtoVersion int
+	Consistency  string
 }
 
 type Storage struct {
 	session *gocql.Session
 }
 
-func NewStorage(opt Options) (*Storage, error) {
-	cluster := gocql.NewCluster(opt.Host...)
-	cluster.Keyspace = opt.KeySpace
-	cluster.Consistency = gocql.Quorum
-	cluster.ProtoVersion = opt.ProtoVersion
+func NewStorage(opts Options) (*Storage, error) {
+	cluster := gocql.NewCluster(opts.Host...)
+	cluster.Keyspace = opts.KeySpace
+	cluster.Consistency = gocql.ParseConsistency(opts.Consistency)
+	cluster.ProtoVersion = opts.ProtoVersion
 
 	session, err := cluster.CreateSession()
 	if err != nil {
 		log.Fatalf("cluster.CreateSession(): %v", err)
 	}
-	defer session.Close()
 
 	return &Storage{session: session}, nil
 }
